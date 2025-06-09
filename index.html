@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FullCalendar Working Example</title>
+  <title>FullCalendar with Add/Edit/Delete</title>
 
-  <!-- FullCalendar CSS from UNPKG (working CDN) -->
+  <!-- FullCalendar CSS -->
   <link href="https://unpkg.com/fullcalendar@6.1.9/index.global.min.css" rel="stylesheet" />
 
   <style>
@@ -23,35 +23,103 @@
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+    #eventModal {
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background: #fff;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      z-index: 9999;
+      display: none;
+    }
+    #eventModal input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 <body>
 
   <div id="calendar"></div>
 
-  <!-- FullCalendar JS (index.global.min.js includes everything globally) -->
+  <!-- Modal for adding/editing event -->
+  <div id="eventModal">
+    <h3 id="modalTitle">Add Event</h3>
+    <input type="text" id="eventTitle" placeholder="Event Title" />
+    <button onclick="saveEvent()">Save</button>
+    <button onclick="deleteEvent()">Delete</button>
+    <button onclick="closeModal()">Cancel</button>
+  </div>
+
+  <!-- FullCalendar JS -->
   <script src="https://unpkg.com/fullcalendar@6.1.9/index.global.min.js"></script>
 
   <script>
+    let calendar;
+    let clickedDate = '';
+    let selectedEvent = null;
+
     document.addEventListener('DOMContentLoaded', function() {
-      var calendarEl = document.getElementById('calendar');
-      var calendar = new FullCalendar.Calendar(calendarEl, {
+      const calendarEl = document.getElementById('calendar');
+
+      calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         headerToolbar: {
           left: 'prev,next today',
           center: 'title',
           right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
-        events: [
-          { title: 'Event 1', start: '2025-06-09' },
-          { title: 'Meeting', start: '2025-06-15' }
-        ],
+        events: [],
         dateClick: function(info) {
-          alert('Clicked on: ' + info.dateStr);
+          clickedDate = info.dateStr;
+          selectedEvent = null;
+          document.getElementById('modalTitle').innerText = 'Add Event';
+          document.getElementById('eventTitle').value = '';
+          document.getElementById('eventModal').style.display = 'block';
+        },
+        eventClick: function(info) {
+          selectedEvent = info.event;
+          document.getElementById('modalTitle').innerText = 'Edit/Delete Event';
+          document.getElementById('eventTitle').value = selectedEvent.title;
+          document.getElementById('eventModal').style.display = 'block';
         }
       });
+
       calendar.render();
     });
+
+    function saveEvent() {
+      const title = document.getElementById('eventTitle').value;
+      if (!title) return;
+
+      if (selectedEvent) {
+        selectedEvent.setProp('title', title);
+      } else {
+        calendar.addEvent({
+          title: title,
+          start: clickedDate
+        });
+      }
+      closeModal();
+    }
+
+    function deleteEvent() {
+      if (selectedEvent) {
+        selectedEvent.remove();
+        closeModal();
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('eventModal').style.display = 'none';
+      document.getElementById('eventTitle').value = '';
+      selectedEvent = null;
+    }
   </script>
 
 </body>
