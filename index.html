@@ -1,37 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>My FullCalendar Demo</title>
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Arial', sans-serif;
-      background-color: #f4f4f4;
-    }
-    #calendar {
-      max-width: 1000px;
-      margin: 20px auto;
-      background: #fff;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      height: 700px; /* crucial for calendar display */
-    }
-    .fc-event {
-      background-color: #0277bd !important;
-      border: none !important;
-      color: #fff !important;
-      border-radius: 4px !important;
-      padding: 2px 4px !important;
-    }
-    .fc-toolbar-title {
-      color: #012761;
-      font-size: 1.5em;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FullCalendar Minimal Test</title>
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.js"></script>
+<style>
+  #calendar {
+    max-width: 900px;
+    margin: 40px auto;
+    height: 600px; /* Important: give it height */
+    border: 1px solid #ccc;
+  }
+</style>
 </head>
 <body>
   <div id="calendar"></div>
@@ -41,18 +23,7 @@
       var calendarEl = document.getElementById('calendar');
       var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-        headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
-        events: [
-          { title: 'Holiday', date: '2025-06-12' },
-          { title: 'Faculty Meeting', date: '2025-06-19' }
-        ],
-        dateClick: function (info) {
-          alert('Clicked on: ' + info.dateStr);
-        }
+        events: [{ title: 'Test Event', start: new Date().toISOString().slice(0, 10) }]
       });
       calendar.render();
     });
