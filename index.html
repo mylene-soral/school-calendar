@@ -17,7 +17,7 @@
     }
 
     #calendar {
-      max-width: 900px;
+      max-width: 1200px;
       margin: 60px auto;
       background: #fff;
       border-radius: 16px;
@@ -129,15 +129,15 @@
       left: 50%;
       transform: translate(-50%, -50%);
       background: #fff;
-      padding: 32px 40px;
+      padding: 24px 30px;
       border-radius: 16px;
       box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
       display: none;
-      width: 400px;
-      max-width: 90vw;
+      width: 600px;
+      max-width: 95vw;
       z-index: 1000;
       overflow-y: auto;
-      max-height: 90vh;
+      max-height: 70vh;
       animation: fadeIn 0.3s ease-out;
     }
 
@@ -579,14 +579,43 @@ function switchToViewMode() {
 }
 
 function switchToEditMode() {
+  if (!selectedEvent) return;
+
+  // Set modal title
+  document.getElementById('modalTitle').innerText = 'Edit Event';
+
+  // Show form, hide view
   showForm();
   hideView();
 
+  // Populate fields with existing event data
+  document.getElementById('eventTitle').value = selectedEvent.title || '';
+
+  // Parse start date/time
+  const start = new Date(selectedEvent.start);
+  document.getElementById('eventDate').value = start.toISOString().split('T')[0];
+  document.getElementById('eventTime').value = start.toTimeString().slice(0,5);
+
+  // Description is stored in extendedProps
+  document.getElementById('eventDescription').value = selectedEvent.extendedProps.description || '';
+
+  // Image (if any)
+  uploadedImageDataUrl = selectedEvent.extendedProps.image || '';
+  const imgPreview = document.getElementById('eventImagePreview');
+  if (uploadedImageDataUrl) {
+    imgPreview.src = uploadedImageDataUrl;
+    imgPreview.style.display = 'block';
+  } else {
+    imgPreview.style.display = 'none';
+  }
+
+  // Buttons
   document.getElementById('saveBtn').style.display = 'inline-block';
   document.getElementById('deleteBtn').style.display = 'inline-block';
-  document.getElementById('viewBtn').style.display = 'inline-block';
   document.getElementById('editBtn').style.display = 'none';
+  document.getElementById('viewBtn').style.display = 'none';
 }
+
 
   </script>
 </body>
